@@ -1,31 +1,115 @@
 ---
-title: 'Spaces vs. Tabs: The Indentation Debate Continues'
-publishedAt: '2024-04-08'
-summary: 'Explore the enduring debate between using spaces and tabs for code indentation, and why this choice matters more than you might think.'
+emoji: "💯"
+title: "부동소수점에 오차가 발생하는 이유(feat. IEEE 754)"
+publishedAt: "2024-04-08"
+summary: "Explore the enduring debate between using spaces and tabs for code indentation, and why this choice matters more than you might think."
 ---
 
-The debate between using spaces and tabs for indentation in coding may seem trivial to the uninitiated, but it is a topic that continues to inspire passionate discussions among developers. This seemingly minor choice can affect code readability, maintenance, and even team dynamics.
+인트로
+최근 모딥다를 읽다가 흥미로운 내용을 발견했다.
 
-Let's delve into the arguments for both sides and consider why this debate remains relevant in the software development world.
+부동소수점 산술 연산은 정확한 결과를 기대하기 어렵다. 정수는 2진법으로 오차 없이 저장 가능하지만 부동소수점을 표현하기 위해 가장 널리 쓰이는 표준인 IEEE 754는 2진법으로 변환했을 때 무한 소수가 되어 미세한 오차가 발생할 수밖에 없는 구조적 한계가 있다.
 
-## The Case for Spaces
+이 구절을 읽고 부동 소수점에 대해 정확히 알아보고 싶은 생각이 들었다. 그리고 왜 2진법으로 변환했을 때 무한 소수가 되어버리는 건지 궁금했다. 그래서 이번 글에서는 관련 내용을 찾아보다가 알게된 내용을 정리해보고자 한다.
 
-Advocates for using spaces argue that it ensures consistent code appearance across different editors, tools, and platforms. Because a space is a universally recognized character with a consistent width, code indented with spaces will look the same no matter where it's viewed. This consistency is crucial for maintaining readability and avoiding formatting issues when code is shared between team members or published online.
+10진법 소수를 2진법으로 변환하기
+우선 간단하게 10진법 소수를 2진법으로 바꿀 수 있는 방법은 무엇인지부터 알아보았다. 간단한 예로 0.1을 변환해보자.
 
-Additionally, some programming languages and style guides explicitly recommend spaces for indentation, suggesting a certain number of spaces (often two or four) per indentation level. Adhering to these recommendations can be essential for projects that aim for best practices in code quality and readability.
+소수에 2를 곱하기
+결과의 정수 부분을 취하고, 이를 비트 값으로 사용하기
+남은 소수 부분에 대해 1, 2번 과정을 반복하기
+예를 들어, 0.1을 변환하면 다음과 같다.
 
-## The Case for Tabs
+0.1 _ 2 = 0.2
+0.2 _ 2 = 0.4
+0.4 _ 2 = 0.8
+0.8 _ 2 = 1.6
+0.6 _ 2 = 1.2
+0.2 _ 2 = 0.4
+0.4 _ 2 = 0.8
+0.8 _ 2 = 1.6
+0.6 _ 2 = 1.2
+0.2 _ 2 = 0.4
+0.4 \* 2 = 0.8
+...
 
-On the other side of the debate, proponents of tabs highlight the flexibility that tabs offer. Because the width of a tab can be adjusted in most text editors, individual developers can choose how much indentation they prefer to see, making the code more accessible and comfortable to read on a personal level. This adaptability can be particularly beneficial in teams with diverse preferences regarding code layout.
+결과: 0.00011 0011 0011 0011 0011...
 
-Tabs also have the advantage of semantic meaning. A tab is explicitly meant to represent indentation, whereas a space is used for many purposes within code. This distinction can make automated parsing and manipulation of code simpler, as tools can more easily recognize and adjust indentation levels without confusing them with spaces used for alignment.
+이 값을 비트에 저장하려면 어떻게 해야할까? 처음에는 이 값을 그대로 비트에 저장하면 되지 않을까 생각했다. 하지만 다양한 수를 표현하려고 하면 문제가 생긴다. 예를 들어 10.1과 2234.23을 2진 소수로 바꿔본다고 하자.
 
-## Hybrid Approaches and Team Dynamics
+10.1 = 1010.00011001100110011...
+2234.23 = 100010111010.0001110101...
 
-The debate often extends into discussions about hybrid approaches, where teams might use tabs for indentation and spaces for alignment within lines, attempting to combine the best of both worlds. However, such strategies require clear team agreements and disciplined adherence to coding standards to prevent formatting chaos.
+이처럼 정수 부분의 길이가 달라지면, 정수 부분과 소수 부분에 각각 얼마나 많은 비트를 할당해야 할지 정하기 어려워진다. 큰 정수를 표현하려면 정수 부분에 많은 비트를, 정밀한 소수를 표현하려면 소수 부분에 많은 비트를 할당해야하기 때문이다.
 
-Ultimately, the choice between spaces and tabs often comes down to team consensus and project guidelines. In environments where collaboration and code sharing are common, agreeing on a standard that everyone follows is more important than the individual preferences of spaces versus tabs. Modern development tools and linters can help enforce these standards, making the choice less about technical limitations and more about team dynamics and coding philosophy.
+부동 소수점 등장
+이런 문제를 해결하기 위해 '부동 소수점' 방식이 고안되었다. '부동 소수점'이란 말 그대로 '떠다니는 소수점'이라는 뜻이다. 영어로는 'floating point'라고 부른다.
 
-## Conclusion
+부동 소수점은 숫자를 '가수'와 '지수' 부분으로 나누어 표현한다. 예를 들어 123.45는 1.2345 \* 10^2로 표현할 수 있다. 여기서 1.2345가 가수, 2가 지수다. 이렇게 하면 소수점이 '떠다니는' 것처럼 보이기 때문에 부동소수점이라고 부른다.
 
-While the spaces vs. tabs debate might not have a one-size-fits-all answer, it underscores the importance of consistency, readability, and team collaboration in software development. Whether a team chooses spaces, tabs, or a hybrid approach, the key is to make a conscious choice that serves the project's needs and to adhere to it throughout the codebase. As with many aspects of coding, communication and agreement among team members are paramount to navigating this classic programming debate.
+2진수 표현에도 이 방식을 적용할 수 있다.
+
+0.1 (2진수: 0.00011 0011 0011...) = 1.1 0011 0011 0011 ... _ 2^-4
+10.1 (2진수: 1010.00011001100110011...) = 1.01000011001100110011... _ 2^3
+2234.23 (2진수: 100010111010.0001110101...) = 1.0001011101000011101010... \* 2^11
+
+이렇게 표현하면 앞자리가 항상 1이 되므로, 이 1은 저장하지 않고 지수와 나머지 가수 부분만 저장하면 된다.
+
+IEEE 754 표준
+IEEE 754는 부동소수점을 표현하기 위한 가장 널리 사용되는 표준이다. 이 표준은 같은 비트 수를 사용했을 때 수의 표현 범위를 최대화하고 정밀도를 높인다. IEEE 754 표준에서 32비트 부동소수점은 다음과 같이 구성된다.
+
+부호(1비트)
+지수(8비트)
+가수(23비트)
+이 방식의 장점을 고정 소수점 방식과 비교해 보자. 32비트 고정 소수점 방식은 16비트를 정수 부분, 16비트를 소수 부분에 할당한다고 가정하면 표현 가능한 범위: 약 -32,768 ~ 32,767, 소수점 아래 약 6자리이다. 32비트 부동소수점 방식(IEEE 754 표준)은 표현 가능한 범위: 약 ±1.18 _ 10^-38 ~ ±3.4 _ 10^38으로 엄청난 차이가 난다.
+
+10진 소수를 IEEE 754 표준에 맞게 변환하는 방법 총 정리
+
+1. 10진수 소수를 2진수로 변환
+   0.1을 2진수로 변환하기
+
+0.1 _ 2 = 0.2
+0.2 _ 2 = 0.4
+0.4 _ 2 = 0.8
+0.8 _ 2 = 1.6
+0.6 _ 2 = 1.2
+0.2 _ 2 = 0.4
+0.4 _ 2 = 0.8
+0.8 _ 2 = 1.6
+0.6 _ 2 = 1.2
+0.2 _ 2 = 0.4
+0.4 \* 2 = 0.8
+...
+
+0.00011 0011 0011 0011 0011... 2. 정규화
+2진수를 1.xxx\*2^n 진수 형태로 변환한다. 여기서 소수점을 왼쪽으로 4번 이동시켜 1.xxx 형태를 만들었으므로, 지수는 -4가 된다.
+
+0.00011 0011 0011 0011 0011...
+1.1 0011 0011 0011 ... \* 2^-4 3. 지수 계산
+IEEE 754 표준은 32비트 단정밀도의 경우 127을 지수에 더한다. 따라서 실제 지수 -4에 127을 더해 123을 얻은 후 이를 2진수로 표현하면 0111 1011이 된다.
+
+-4 + 127 = 123
+0111 1011 4. 가수 계산
+정규화된 수에서 소수점 이후 23비트를 가수로 사용한다. 1.xxx에서 1 이후의 xxx 부분만 저장한다. 23비트를 넘어가는 부분은 반올림한다.
+
+1.1 0011 0011 0011 ... \* 2^-4
+1001100110011001100110(0) 5. 부호 지정
+양수면 0, 음수면 1을 부호 비트로 사용한다. 0.1은 양수이므로 0이다.
+
+음수 1 양수 0
+0.1의 부호는 = 0 6. 최종 결과
+부호(1비트), 지수(8비트), 가수(23비트)를 순서대로 배열하여 최종 32비트 표현을 얻는다.
+
+0 01111011 10011001100110011001101
+미세한 오차가 발생하는 이유
+실제 컴퓨터에서는 무한한 비트를 사용할 수 없다. 따라서 어느 시점에서 반올림이나 절삭을 해야 한다. 이로 인해 일부 10진 소수는 2진수로 정확히 표현될 수 없으며, 필연적으로 근사값으로 저장된다. 이 차이가 부동소수점 연산에서 미세한 오차를 발생시키는 원인이 된다.
+
+0.1을 IEEE 754 표준에 맞게 바꿨을 때:
+0 01111011 10011001100110011001101
+
+위 2진수를 다시 10진수로 바꿨을 때:
+0.100000001490116119384765625
+
+실제 값과의 차이: 1.1102230246251565e-16
+참고
+https://devocean.sk.com/blog/techBoardDetail.do?ID=165270

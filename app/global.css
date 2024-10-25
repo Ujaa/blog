@@ -1,11 +1,12 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 ::selection {
-  background-color: #47a3f3;
-  color: #fefefe;
+  background-color: #ffeb79;
+  color: #000000;
 }
 
 :root {
+  --text-strong: #0482d6;
   --sh-class: #2d5e9d;
   --sh-identifier: #354150;
   --sh-sign: #8996a3;
@@ -31,6 +32,11 @@
 
 html {
   min-width: 360px;
+  font-family: var(--font-suit);
+}
+
+.prose {
+  @apply text-lg;
 }
 
 .prose .anchor {
@@ -48,12 +54,12 @@ html {
 }
 
 .prose a {
-  @apply underline transition-all decoration-neutral-400 dark:decoration-neutral-600 underline-offset-2 decoration-[0.1em];
+  @apply underline transition-all text-blue-500 decoration-blue-200 dark:decoration-neutral-600 underline-offset-2 decoration-[0.1em];
 }
 
 .prose .anchor:after {
   @apply text-neutral-300 dark:text-neutral-700;
-  content: '#';
+  content: "#";
 }
 
 .prose *:hover > .anchor {
@@ -61,17 +67,17 @@ html {
 }
 
 .prose pre {
-  @apply bg-neutral-50 dark:bg-neutral-900 rounded-lg overflow-x-auto border border-neutral-200 dark:border-neutral-900 py-2 px-3 text-sm;
+  @apply bg-slate-800 dark:bg-neutral-900 rounded-lg overflow-x-auto border border-slate-400 dark:border-neutral-900 py-4 px-3 text-sm mb-3;
 }
 
 .prose code {
-  @apply px-1 py-0.5 rounded-lg;
+  @apply px-1.5 py-0.5 rounded-md bg-slate-50 text-base border-slate-200;
 }
 
 .prose pre code {
-  @apply p-0;
+  @apply p-0 bg-transparent;
   border: initial;
-  line-height: 1.5;
+  line-height: 1.2;
 }
 
 .prose code span {
@@ -88,15 +94,15 @@ html {
 }
 
 .prose h1 {
-  @apply text-4xl font-medium tracking-tight mt-6 mb-2;
+  @apply text-4xl font-bold tracking-tight mt-8 mb-2;
 }
 
 .prose h2 {
-  @apply text-xl font-medium tracking-tight mt-6 mb-2;
+  @apply text-2xl font-semibold tracking-tight mt-8 mb-2;
 }
 
 .prose h3 {
-  @apply text-xl font-medium tracking-tight mt-6 mb-2;
+  @apply text-xl font-medium tracking-tight mt-8 mb-2;
 }
 
 .prose h4 {
@@ -108,17 +114,16 @@ html {
 }
 
 .prose ul {
-  @apply list-disc pl-6;
+  @apply list-disc pl-6 mb-4;
 }
 
 .prose ol {
-  @apply list-decimal pl-6;
+  @apply list-decimal pl-6 mb-4;
 }
 
 .prose > :first-child {
   /* Override removing top margin, causing layout shift */
   margin-top: 1.25em !important;
-  margin-bottom: 1.25em !important;
 }
 
 pre::-webkit-scrollbar {
@@ -131,8 +136,8 @@ pre {
 }
 
 /* Remove Safari input shadow on mobile */
-input[type='text'],
-input[type='email'] {
+input[type="text"],
+input[type="email"] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
