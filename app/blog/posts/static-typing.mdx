@@ -1,52 +1,54 @@
 ---
-title: 'The Power of Static Typing in Programming'
-publishedAt: '2024-04-07'
-summary: 'In the ever-evolving landscape of software development, the debate between dynamic and static typing continues to be a hot topic.'
+emoji: "🧑"
+title: "객체를 불변하게 만드는 것이란?(feat.getOwnPropertyDescriptor())"
+publishedAt: "2024-04-07"
+summary: "In the ever-evolving landscape of software development, the debate between dynamic and static typing continues to be a hot topic."
 ---
 
-In the ever-evolving landscape of software development, the debate between dynamic and static typing continues to be a hot topic. While dynamic typing offers flexibility and rapid development, static typing brings its own set of powerful advantages that can significantly improve the quality and maintainability of code. In this post, we'll explore why static typing is crucial for developers, accompanied by practical examples through markdown code snippets.
+자바스크립트 개발을 하다 보면, 객체를 불변하게 만들어야 하는 경우가 종종 발생한다. 이런 상황에서 보통 우리가 사용하는 방법이 바로 Object.freeze()다. 그러나 단순히 Object.freeze()를 호출하는 것이 객체를 불변하게 만드는 이유일까? 사실 객체가 불변하다는 것은 객체가 가진 내부 속성에 따라 달라진다. 이번 글에서는 이 내부 속성에 대해 알아보겠다!
 
-## Improved Code Quality and Safety
+Internal Slot과 Internal Method
+내부 속성을 이해하려면 internal slot과 internal method 개념을 짚고 넘어가는 게 좋다. 다음은 ECMAScript의 6.1.7.2 Object Internal Methods and Internal Slots 내용을 참고해 internal slot과 internal method에 대해 정리한 내용이다.
 
-One of the most compelling reasons to use static typing is the improvement it brings to code quality and safety. By enforcing type checks at compile time, static typing catches errors early in the development process, reducing the chances of runtime errors.
+Internal Method: 객체의 동작을 정의하는 알고리즘이다.
+internal slot: 객체와 관련된 내부 상태를 나타내는 겂이다. 외부에서는 접근할 수 없다.
+이 두 가지는 자바스크립트 엔진이 객체의 동작을 관리하는 핵심 요소다. 둘 다 이중 괄호([[...]])로 이름이 감싸져 있고, 단순히 명세에서만 언급되는 값이다. 그래서 개발자가 직접 접근할 수 없는 게 일반적이지만, 일부 slot과 method는 간접적으로 접근할 수 있는 방법이 존재한다.
 
-```ts
-function greet(name: string): string {
-  return `Hello, ${name}!`
-}
+6.1.7.2 Object Internal Methods and Internal Slots
+The actual semantics of objects, in ECMAScript, are specified via algorithms called internal methods. Each object in an ECMAScript engine is associated with a set of internal methods that defines its runtime behaviour. These internal methods are not part of the ECMAScript language. They are defined by this specification purely for expository purposes. However, each object within an implementation of ECMAScript must behave as specified by the internal methods associated with it. The exact manner in which this is accomplished is determined by the implementation.
+...
+Internal slots correspond to internal state that is associated with objects and used by various ECMAScript specification algorithms. Internal slots are not object properties and they are not inherited.
+...
+Internal methods and internal slots are identified within this specification using names enclosed in double square brackets [[]].
+객체의 프로퍼티의 속성(attribute): Writable, Enumrable, Configurable
+자바스크립트 엔진은 객체의 프로퍼티를 생성할 때 프로퍼티의 상태를 나타낼 3가지 속성(attribute)을 정의한다. 이 속성들은 ECMAScript 명세서의 6.1.7.1 Property Attributes에 나와 있으며 정리하면 다음과 같다.
 
-// This will throw an error at compile time, preventing potential runtime issues.
-let message: string = greet(123)
+속성 이름 설명
+[[Writable]] 프로퍼티의 값을 수정할 수 있는가
+[[Enumerable]] 프로퍼티가 반복문에서 열거될 수 있는가
+[[Configurable]] 프로퍼티를 삭제하거나 속성의 정의를 변경할 수 있는가
+Object.freeze()에 따른 프로퍼티 속성 값의 변화 살펴보기
+객체가 불변하다는 것은 객체 내부의 값이 추가/수정/삭제되지 않는다는 뜻이다. 그렇다면 객체 프로퍼티의 속성인 writable과 configurable가 false 라면 프로퍼티의 값을 변경할 수도 삭제할 수도 없기 때문에 변하지 않는 불변상태가 되는 것 아닐까?
+
+실제로 객체를 생성한 뒤에 object.freeze를 하고 writable과 configurable 값의 변화를 살펴보자. 참고로, 이 3가지 값은 내부 슬롯이라 직접 접근할 수는 없고 getOwnPropertyDescriptor 함수를 통해 값을 확인할 수 있다.
+
+```
+const person = { age: 20, name: "test" };
+Object.getOwnPropertyDescriptors(person);
 ```
 
-## Enhanced Readability and Maintainability
+configurable, writable가 모두 true인 것을 확인할 수 있다.
 
-Static typing makes code more readable and maintainable. By explicitly declaring types, developers provide a clear contract of what the code does, making it easier for others (or themselves in the future) to understand and modify the codebase.
-
-## Facilitates Tooling and Refactoring
-
-Modern IDEs leverage static typing to offer advanced features like code completion, refactoring, and static analysis. These tools can automatically detect issues, suggest fixes, and safely refactor code, enhancing developer productivity and reducing the likelihood of introducing bugs during refactoring.
-
-```csharp
-// Refactoring example: Renaming a method in C#
-public class Calculator {
-    public int Add(int a, int b) {
-        return a + b;
-    }
-}
-
-// After refactoring `Add` to `Sum`, all references are automatically updated.
-public class Calculator {
-    public int Sum(int a, int b) {
-        return a + b;
-    }
-}
+```
+Object.freeze(person);
+Object.getOwnPropertyDescriptors(person);
 ```
 
-## Performance Optimizations
+configurable, writable가 모두 false인 것을 확인할 수 있다.
 
-Static typing can lead to better performance. Since types are known at compile time, compilers can optimize the generated code more effectively. This can result in faster execution times and lower resource consumption.
+결국 객체를 불변하게 만든다는 것은 단순히 Object.freeze()를 호출하는 것만으로 결정되는 것이 아니다. 실제로는 객체의 프로퍼티 속성인 Writable와 Configurable 값에 의해 불변성이 결정된다. Object.freeze()는 이 속성들을 조절하여 객체를 불변 상태로 만드는 것이다.
 
-## Conclusion
-
-Static typing offers numerous benefits that contribute to the development of robust, efficient, and maintainable software. By catching errors early, enhancing readability, facilitating tooling, and enabling optimizations, static typing is an invaluable asset for developers. As the software industry continues to mature, the importance of static typing in ensuring code quality and performance cannot be overstated. Whether you're working on a large-scale enterprise application or a small project, embracing static typing can lead to better software development outcomes.
+참고
+ECMAScript 명세서
+모딥다 16장
+TOAST UI 블로그
