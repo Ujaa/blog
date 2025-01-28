@@ -24,18 +24,28 @@ export function BlogPosts() {
                 className="rounded-xl w-full aspect-3/2 object-cover mb-3"
                 src={
                   post.metadata.image
-                    ? `/images/${post.metadata.image}`
+                    ? `${baseUrl}/images/${post.metadata.image}`
                     : `/og?title=${encodeURIComponent(post.metadata.title)}`
                 }
                 alt={`"${post.metadata.title}"의 포스트 이미지`}
               />
-              <h2 className="font-bold text-lg text-neutral-900 mb-2 leading-6 line-clamp-2 tracking-tight">
+
+              {post.metadata.tags && (
+                <ul className="flex flex-wrap gap-1 mb-3">
+                  {post.metadata.tags?.map((tag) => (
+                    <li className="rounded-md bg-slate-100/20 px-1.5 py-0.5 border border-slate-200 font-medium text-slate-500 text-xs tabular-nums">
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <h2 className="font-semibold text-lg text-slate-950 mb-2 leading-6 line-clamp-1 md:line-clamp-2 tracking-tight">
                 {post.metadata.title}
               </h2>
-              <p className="font-medium text-sm text-neutral-700 line-clamp-2 mb-2 tracking-tight">
+              <p className="font-normal text-sm text-slate-700 line-clamp-2 mb-2 tracking-tight">
                 {post.metadata.summary}
               </p>
-              <p className="font-medium text-neutral-400 text-xs tabular-nums">
+              <p className="font-normal text-slate-500 text-xs tabular-nums">
                 {formatDate(post.metadata.publishedAt, false)}
               </p>
             </li>
