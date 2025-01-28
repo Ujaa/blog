@@ -8,10 +8,10 @@ import Footer from "./components/footer";
 import { baseUrl } from "./sitemap";
 import localFont from "next/font/local";
 
-const suit = localFont({
-  src: "./fonts/SUIT-Variable.woff2",
+const pretendard = localFont({
+  src: "./fonts/PretendardVariable.woff2",
   display: "swap",
-  variable: "--font-suit",
+  variable: "--font-pretendard",
 });
 
 export const metadata: Metadata = {
@@ -54,7 +54,7 @@ export default function RootLayout({
       lang="en"
       className={cx(
         "text-black bg-white dark:text-white dark:bg-black",
-        suit.variable,
+        pretendard.variable,
         GeistMono.variable
       )}
     >
