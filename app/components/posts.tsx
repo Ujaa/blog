@@ -1,37 +1,47 @@
 import Link from "next/link";
+import { baseUrl } from "app/sitemap";
 import { formatDate, getBlogPosts } from "app/blog/utils";
 
 export function BlogPosts() {
-  let allBlogs = getBlogPosts();
+  const allBlogs = getBlogPosts();
 
   return (
-    <div>
+    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {allBlogs
-        .sort((a, b) => {
-          if (
-            new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)
-          ) {
-            return -1;
-          }
-          return 1;
-        })
+        .sort((a, b) =>
+          new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)
+            ? -1
+            : 1
+        )
         .map((post) => (
           <Link
             key={post.slug}
             className="flex flex-col space-y-1 mb-4"
             href={`/blog/${post.slug}`}
           >
-            <div className="w-full flex flex-col items-center md:flex-row space-x-0 md:space-x-2">
-              <p className="text-slate-600 dark:text-slate-400 text-sm w-[140px] tabular-nums">
+            {console.log(post.metadata.image)}
+            <li>
+              <img
+                className="rounded-xl w-full aspect-3/2 object-cover mb-3"
+                src={
+                  post.metadata.image
+                    ? `/images/${post.metadata.image}`
+                    : `/og?title=${encodeURIComponent(post.metadata.title)}`
+                }
+                alt={`"${post.metadata.title}"의 포스트 이미지`}
+              />
+              <h2 className="font-bold text-lg text-neutral-900 mb-2 leading-6 line-clamp-2 tracking-tight">
+                {post.metadata.title}
+              </h2>
+              <p className="font-medium text-sm text-neutral-700 line-clamp-2 mb-2 tracking-tight">
+                {post.metadata.summary}
+              </p>
+              <p className="font-medium text-neutral-400 text-xs tabular-nums">
                 {formatDate(post.metadata.publishedAt, false)}
               </p>
-              <p className="flex flex-wrap gap-x-2 text-xl font-medium text-neutral-900 dark:text-neutral-100 tracking-tight">
-                <span>{post.metadata.emoji}</span>
-                <span>{post.metadata.title}</span>
-              </p>
-            </div>
+            </li>
           </Link>
         ))}
-    </div>
+    </ul>
   );
 }

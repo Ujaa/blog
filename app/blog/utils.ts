@@ -68,13 +68,13 @@ export function formatDate(date: string, includeRelative = false) {
   let formattedDate = "";
 
   if (yearsAgo > 0) {
-    formattedDate = `${yearsAgo}y ago`;
+    formattedDate = `${yearsAgo}년 전`;
   } else if (monthsAgo > 0) {
-    formattedDate = `${monthsAgo}mo ago`;
+    formattedDate = `${monthsAgo}달 전`;
   } else if (daysAgo > 0) {
-    formattedDate = `${daysAgo}d ago`;
+    formattedDate = `${daysAgo}일 전`;
   } else {
-    formattedDate = "Today";
+    formattedDate = "오늘";
   }
 
   let fullDate = targetDate.toLocaleString("ko-kr", {
@@ -87,5 +87,5 @@ export function formatDate(date: string, includeRelative = false) {
     return fullDate;
   }
 
-  return `${fullDate} (${formattedDate})`;
+  return `${fullDate}(${formattedDate})`;
 }
