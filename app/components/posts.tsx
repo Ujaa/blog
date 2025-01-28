@@ -19,7 +19,6 @@ export function BlogPosts() {
             className="flex flex-col space-y-1 mb-4"
             href={`/blog/${post.slug}`}
           >
-            {console.log(post.metadata.image)}
             <li>
               <img
                 className="rounded-xl w-full aspect-3/2 object-cover mb-3"
