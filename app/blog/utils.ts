@@ -1,14 +1,6 @@
 import fs from "fs";
 import path from "path";
-
-type Metadata = {
-  emoji: string;
-  title: string;
-  publishedAt: string;
-  summary: string;
-  image?: string;
-  tags: string[];
-};
+import { Metadata } from "../types";
 
 function parseFrontmatter(fileContent: string) {
   let frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
