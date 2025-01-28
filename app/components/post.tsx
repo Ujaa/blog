@@ -14,15 +14,17 @@ export default function Post(post: {
       href={`/blog/${post.slug}`}
     >
       <li>
-        <img
-          className="rounded-xl w-full aspect-3/2 object-cover mb-3"
-          src={
-            post.metadata.image
-              ? `/images/${post.metadata.image}`
-              : `/og?title=${encodeURIComponent(post.metadata.title)}`
-          }
-          alt={`"${post.metadata.title}"의 포스트 이미지`}
-        />
+        <div className="rounded-xl w-full aspect-3/2 mb-3 overflow-hidden">
+          <img
+            className="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+            src={
+              post.metadata.image
+                ? `/images/${post.metadata.image}`
+                : `/og?title=${encodeURIComponent(post.metadata.title)}`
+            }
+            alt={`"${post.metadata.title}"의 포스트 이미지`}
+          />
+        </div>
 
         {post.metadata.tags && (
           <ul className="flex flex-wrap gap-1 mb-3">
