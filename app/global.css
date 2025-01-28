@@ -86,31 +86,31 @@ html {
 
 .prose img {
   /* Don't apply styles to next/image */
-  @apply m-0;
+  @apply m-auto;
 }
 
 .prose p {
-  @apply my-4 text-neutral-800 dark:text-neutral-200;
+  @apply my-3 text-slate-700 dark:text-slate-200 text-lg;
 }
 
 .prose h1 {
-  @apply text-4xl font-bold tracking-tight mt-8 mb-2;
+  @apply text-4xl font-bold tracking-tight mt-8 mb-2 text-slate-900;
 }
 
 .prose h2 {
-  @apply text-2xl font-semibold tracking-tight mt-8 mb-2;
+  @apply text-2xl font-bold tracking-tight mt-8 mb-2 text-slate-900;
 }
 
 .prose h3 {
-  @apply text-xl font-medium tracking-tight mt-8 mb-2;
+  @apply text-xl font-semibold tracking-tight mt-8 mb-2 text-slate-900;
 }
 
 .prose h4 {
-  @apply text-lg font-medium tracking-tight mt-6 mb-2;
+  @apply text-lg font-semibold tracking-tight mt-6 mb-2 text-slate-900;
 }
 
 .prose strong {
-  @apply font-medium;
+  @apply font-semibold text-slate-900;
 }
 
 .prose ul {

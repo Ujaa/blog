@@ -72,7 +72,7 @@ export default function Blog({ params }) {
             dateModified: post.metadata.publishedAt,
             description: post.metadata.summary,
             image: post.metadata.image
-              ? `${baseUrl}${post.metadata.image}`
+              ? `/images/${post.metadata.image}`
               : `/og?title=${encodeURIComponent(post.metadata.title)}`,
             url: `${baseUrl}/blog/${post.slug}`,
             author: {
@@ -82,10 +82,22 @@ export default function Blog({ params }) {
           }),
         }}
       />
-      <p className="font-semibold text-5xl mb-8">{post.metadata.emoji}</p>
-      <h1 className="title font-bold text-4xl tracking-tighter">
+      {post.metadata.tags && (
+        <ul className="flex flex-wrap gap-1.5 mb-5">
+          {post.metadata.tags?.map((tag) => (
+            <li
+              key={tag}
+              className="rounded-md bg-slate-100/20 px-2 py-1 border border-slate-200 font-medium text-slate-500 text-sm tabular-nums"
+            >
+              {tag}
+            </li>
+          ))}
+        </ul>
+      )}
+      <h1 className="title font-bold text-4xl tracking-tighter mb-5">
         {post.metadata.title}
       </h1>
+
       <div className="flex justify-between items-center mt-3 mb-10 text-sm">
         <p className="text-base text-neutral-500 dark:text-neutral-400">
           {formatDate(post.metadata.publishedAt)}
