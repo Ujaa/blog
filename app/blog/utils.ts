@@ -1,18 +1,18 @@
 import fs from "fs";
 import path from "path";
-import { Metadata, Post } from "../types";
+import { IMetadata, IPost } from "../types";
 
-function parseFrontmatter(fileContent: string): Post {
+function parseFrontmatter(fileContent: string): IPost {
   const frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
   const match = frontmatterRegex.exec(fileContent);
   const frontMatterBlock = match![1];
   const content = fileContent.replace(frontmatterRegex, "").trim();
   const frontMatterLines = frontMatterBlock.trim().split("\n");
-  const metadata: Partial<Metadata> = {};
+  const metadata: Partial<IMetadata> = {};
 
   frontMatterLines.forEach((line) => {
     const [key, ...valueArr] = line.split(": ");
-    const metaDataKey = key.trim() as keyof Metadata;
+    const metaDataKey = key.trim() as keyof IMetadata;
     let value = valueArr.join(": ").trim();
     value = value.replace(/^['"](.*)['"]$/, "$1");
     if (metaDataKey === "tags") metadata[metaDataKey] = value.split(", ");
@@ -28,7 +28,7 @@ function parseFrontmatter(fileContent: string): Post {
   });
 
   return {
-    metadata: metadata as Metadata,
+    metadata: metadata as IMetadata,
     toc,
     content,
   };
@@ -43,7 +43,7 @@ function readMDXFile(filePath) {
   return parseFrontmatter(rawContent);
 }
 
-function getMDXData(dir): Post[] {
+function getMDXData(dir): IPost[] {
   let mdxFiles = getMDXFiles(dir);
   return mdxFiles.map((file) => {
     let { metadata, toc, content } = readMDXFile(path.join(dir, file));

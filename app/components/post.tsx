@@ -1,13 +1,9 @@
 import Link from "next/link";
-import { formatDate, getBlogPosts } from "app/blog/utils";
-import { Metadata } from "../types";
+import { formatDate } from "app/blog/utils";
+import { IPost } from "../types";
 import Tag from "./Tag";
 
-export default function Post(post: {
-  metadata: Metadata;
-  slug: string;
-  content: string;
-}) {
+export default function Post(post: IPost) {
   return (
     <Link
       key={post.slug}
