@@ -16,6 +16,9 @@ const pretendard = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
+  icons: {
+    icon: "/favicon.ico",
+  },
   title: {
     default: "Home",
     template: "%s | Ujaa의 블로그",
