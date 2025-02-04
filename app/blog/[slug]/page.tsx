@@ -72,7 +72,7 @@ export default function Blog({ params }) {
   };
 
   return (
-    <section className="max-w-4xl m-auto relative">
+    <section className="max-w-4xl m-auto relative px-2 xl:px-0">
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -96,7 +96,7 @@ export default function Blog({ params }) {
         }}
       />
       {post.toc && (
-        <aside className="hidden 2xl:block sticky w-4xl top-8 bg-amber-500">
+        <aside className="hidden 2xl:block sticky w-4xl top-24 bg-amber-500">
           <div className="absolute left-full ml-10 text-sm z-20 w-1/4 overflow-hidden text-neutral-400">
             <h1 className=" mb-2 text-neutral-500 font-semibold">
               Table Of Contents
@@ -123,7 +123,7 @@ export default function Blog({ params }) {
           {post.metadata.tags?.map((tag) => (
             <li
               key={tag}
-              className="rounded-md bg-neutral-100/20 dark:bg-neutral-400/20 px-2 py-1 border border-neutral-200 dark:border-neutral-500 font-medium text-neutral-500 dark:text-neutral-300 text-sm tabular-nums"
+              className="rounded-md bg-neutral-100/20 dark:bg-neutral-600/20 px-2 py-1 border border-neutral-200 dark:border-neutral-500 font-medium text-neutral-500 dark:text-neutral-300 text-sm tabular-nums"
             >
               {tag}
             </li>
