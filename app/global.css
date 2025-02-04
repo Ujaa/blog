@@ -1,8 +1,7 @@
 @import "tailwindcss";
 
 ::selection {
-  background-color: #ffeb79;
-  color: #000000;
+  @apply bg-yellow-100 text-neutral-950;
 }
 
 :root {

@@ -1,8 +1,8 @@
 function ArrowIcon() {
   return (
     <svg
-      width="12"
-      height="12"
+      width="8"
+      height="8"
       viewBox="0 0 12 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -17,34 +17,36 @@ function ArrowIcon() {
 
 export default function Footer() {
   return (
-    <footer className="mb-16">
-      <ul className="font-sm mt-8 flex flex-col space-x-0 space-y-2 text-neutral-600 md:flex-row md:space-x-4 md:space-y-0 dark:text-neutral-300">
-        <li>
-          <a
-            className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="/rss"
-          >
-            <ArrowIcon />
-            <p className="ml-2 h-7">rss</p>
-          </a>
-        </li>
-        <li>
-          <a
-            className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://github.com/Ujaa"
-          >
-            <ArrowIcon />
-            <p className="ml-2 h-7">github</p>
-          </a>
-        </li>
-      </ul>
-      <p className="mt-8 text-neutral-600 dark:text-neutral-300">
-        © {new Date().getFullYear()} MIT Licensed
-      </p>
+    <footer className="dark:border-t-neutral-700 mt-36 border-t border-t-neutral-100 px-2 pb-6 pt-4">
+      <div className="flex flex-col gap-1 md:gap-4 md:flex-row md:max-w-7xl m-auto md:justify-center">
+        <ul className="text-xs flex items-center gap-2 text-neutral-500 md:flex-row dark:text-neutral-300">
+          <li>
+            <a
+              className="flex items-center gap-1 transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+              rel="noopener noreferrer"
+              target="_blank"
+              href="/rss"
+            >
+              <ArrowIcon />
+              <p>rss</p>
+            </a>
+          </li>
+          <li>
+            <a
+              className="flex items-center gap-1 transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+              rel="noopener noreferrer"
+              target="_blank"
+              href="https://github.com/Ujaa"
+            >
+              <ArrowIcon />
+              <p>github</p>
+            </a>
+          </li>
+        </ul>
+        <p className="text-neutral-500 dark:text-neutral-300 text-xs">
+          © {new Date().getFullYear()} YUJIN LEE. All Rights Reserved.
+        </p>
+      </div>
     </footer>
   );
 }

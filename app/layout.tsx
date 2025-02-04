@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "./components/footer";
 import { baseUrl } from "./sitemap";
 import localFont from "next/font/local";
+import { ThemeProvider } from "./ThemeProvider";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -16,6 +17,9 @@ const pretendard = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
+  icons: {
+    icon: "/favicon.ico",
+  },
   title: {
     default: "Home",
     template: "%s | Ujaa의 블로그",
@@ -56,21 +60,23 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="en"
+      lang="kr"
       className={cx(
         "text-neutral-900 bg-white dark:text-white dark:bg-neutral-900",
         pretendard.variable,
         GeistMono.variable
       )}
     >
-      <body className="antialiased px-4 mt-8 lg:mx-auto">
-        <main className="flex-auto min-w-0 flex flex-col">
-          <Navbar />
-          {children}
+      <body className="antialiased lg:mx-auto">
+        <ThemeProvider>
+          <main className="flex-auto min-w-0 flex flex-col">
+            <Navbar />
+            {children}
+            <Analytics />
+            <SpeedInsights />
+          </main>
           <Footer />
-          <Analytics />
-          <SpeedInsights />
-        </main>
+        </ThemeProvider>
       </body>
     </html>
   );
