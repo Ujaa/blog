@@ -53,13 +53,13 @@ export default function RootLayout({
     <html
       lang="en"
       className={cx(
-        "text-black bg-white dark:text-white dark:bg-black",
+        "text-neutral-900 bg-white dark:text-white dark:bg-neutral-900",
         pretendard.variable,
         GeistMono.variable
       )}
     >
-      <body className="antialiased max-w-7xl px-4 mt-8 lg:mx-auto">
-        <main className="flex-auto min-w-0 mt-6 flex flex-col">
+      <body className="antialiased px-4 mt-8 lg:mx-auto">
+        <main className="flex-auto min-w-0 flex flex-col">
           <Navbar />
           {children}
           <Footer />

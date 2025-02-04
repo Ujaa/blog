@@ -1,25 +1,37 @@
 import fs from "fs";
 import path from "path";
-import { Metadata } from "../types";
+import { IMetadata, IPost } from "../types";
 
-function parseFrontmatter(fileContent: string) {
-  let frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
-  let match = frontmatterRegex.exec(fileContent);
-  let frontMatterBlock = match![1];
-  let content = fileContent.replace(frontmatterRegex, "").trim();
-  let frontMatterLines = frontMatterBlock.trim().split("\n");
-  let metadata: Partial<Metadata> = {};
+function parseFrontmatter(fileContent: string): IPost {
+  const frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
+  const match = frontmatterRegex.exec(fileContent);
+  const frontMatterBlock = match![1];
+  const content = fileContent.replace(frontmatterRegex, "").trim();
+  const frontMatterLines = frontMatterBlock.trim().split("\n");
+  const metadata: Partial<IMetadata> = {};
 
   frontMatterLines.forEach((line) => {
     const [key, ...valueArr] = line.split(": ");
-    const metaDataKey = key.trim() as keyof Metadata;
+    const metaDataKey = key.trim() as keyof IMetadata;
     let value = valueArr.join(": ").trim();
     value = value.replace(/^['"](.*)['"]$/, "$1");
     if (metaDataKey === "tags") metadata[metaDataKey] = value.split(", ");
     else metadata[metaDataKey] = value;
   });
 
-  return { metadata: metadata as Metadata, content };
+  const headingRegex = /^#{1,4} (.+)*/gm;
+  const matches = content.match(headingRegex) ?? [];
+  const toc: Array<[number, string]> = [];
+  matches.forEach((match) => {
+    const [level, ...text] = match.split(" ");
+    toc.push([level.length, text.join(" ")]);
+  });
+
+  return {
+    metadata: metadata as IMetadata,
+    toc,
+    content,
+  };
 }
 
 function getMDXFiles(dir) {
@@ -31,15 +43,16 @@ function readMDXFile(filePath) {
   return parseFrontmatter(rawContent);
 }
 
-function getMDXData(dir) {
+function getMDXData(dir): IPost[] {
   let mdxFiles = getMDXFiles(dir);
   return mdxFiles.map((file) => {
-    let { metadata, content } = readMDXFile(path.join(dir, file));
+    let { metadata, toc, content } = readMDXFile(path.join(dir, file));
     let slug = path.basename(file, path.extname(file));
 
     return {
       metadata,
       slug,
+      toc,
       content,
     };
   });
