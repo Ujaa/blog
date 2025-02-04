@@ -18,16 +18,21 @@ export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
     default: "Home",
-    template: "%s | Ujaa Blog",
+    template: "%s | Ujaa의 블로그",
   },
-  description: "This is Ujaa's blog.",
+  description: "모든 꾸준히 공부하고 기록하기",
+  keywords: ["Ujaa", "블로그", "기술 블로그", "tech blog"],
   openGraph: {
-    title: "Portfolio",
-    description: "This is my portfolio.",
+    title: "Ujaa의 블로그",
+    description: "모든 꾸준히 공부하고 기록하기",
     url: baseUrl,
-    siteName: "My Portfolio",
-    locale: "en_US",
+    siteName: "Ujaa의 블로그",
+    locale: "ko_KR",
     type: "website",
+    images: "/images/og-image.png",
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
   robots: {
     index: true,
