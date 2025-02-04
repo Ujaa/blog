@@ -5,3 +5,10 @@ export type Metadata = {
   image?: string;
   tags: string[];
 };
+
+export type Post = {
+  metadata: Metadata;
+  slug?: string;
+  content: string;
+  toc?: Array<[number, string]>;
+};

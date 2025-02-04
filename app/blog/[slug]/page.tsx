@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { CustomMDX } from "app/components/mdx";
 import { formatDate, getBlogPosts } from "app/blog/utils";
 import { baseUrl } from "app/sitemap";
+import { slugify } from "@/utils/slug";
 
 export async function generateStaticParams() {
   let posts = getBlogPosts();
@@ -52,14 +53,26 @@ export function generateMetadata({ params }) {
 }
 
 export default function Blog({ params }) {
-  let post = getBlogPosts().find((post) => post.slug === params.slug);
+  const post = getBlogPosts().find((post) => post.slug === params.slug);
 
   if (!post) {
     notFound();
   }
 
+  const getPadding = (level: number): string | undefined => {
+    return level === 1
+      ? "pl-0"
+      : level === 2
+      ? "pl-2"
+      : level === 3
+      ? "pl-4"
+      : level === 4
+      ? "pl-6"
+      : "pl-0";
+  };
+
   return (
-    <section className="max-w-5xl m-auto">
+    <section className="max-w-4xl m-auto relative">
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -82,6 +95,29 @@ export default function Blog({ params }) {
           }),
         }}
       />
+      {post.toc && (
+        <aside className="hidden 2xl:block sticky w-4xl top-8 bg-amber-500">
+          <div className="absolute left-full ml-10 text-sm z-20 w-1/4 overflow-hidden text-neutral-400">
+            <h1 className=" mb-2 text-neutral-500 font-semibold">
+              Table Of Contents
+            </h1>
+            <ul className="truncate flex flex-col gap-1">
+              {post.toc.map(([level, slug], index) => (
+                <li
+                  className={`${getPadding(
+                    level
+                  )} hover:text-neutral-600 hover:font-medium hover:cursor-pointer`}
+                  key={index}
+                >
+                  <a href={`#${slugify(slug)}`} className="anchor">
+                    {slug}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+      )}
       {post.metadata.tags && (
         <ul className="flex flex-wrap gap-1.5 mb-5">
           {post.metadata.tags?.map((tag) => (
