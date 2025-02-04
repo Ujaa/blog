@@ -59,7 +59,7 @@ export default function Blog({ params }) {
   }
 
   return (
-    <section>
+    <section className="max-w-5xl m-auto">
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -87,7 +87,7 @@ export default function Blog({ params }) {
           {post.metadata.tags?.map((tag) => (
             <li
               key={tag}
-              className="rounded-md bg-slate-100/20 px-2 py-1 border border-slate-200 font-medium text-slate-500 text-sm tabular-nums"
+              className="rounded-md bg-neutral-100/20 dark:bg-neutral-400/20 px-2 py-1 border border-neutral-200 dark:border-neutral-500 font-medium text-neutral-500 dark:text-neutral-300 text-sm tabular-nums"
             >
               {tag}
             </li>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatDate, getBlogPosts } from "app/blog/utils";
 import { Metadata } from "../types";
+import Tag from "./Tag";
 
 export default function Post(post: {
   metadata: Metadata;
@@ -29,22 +30,17 @@ export default function Post(post: {
         {post.metadata.tags && (
           <ul className="flex flex-wrap gap-1 mb-3">
             {post.metadata.tags?.map((tag) => (
-              <li
-                key={tag}
-                className="rounded-md bg-slate-100/20 px-1.5 py-0.5 border border-slate-200 font-medium text-slate-500 text-xs tabular-nums"
-              >
-                {tag}
-              </li>
+              <Tag key={tag} text={tag} />
             ))}
           </ul>
         )}
-        <h2 className="font-semibold text-lg text-slate-950 mb-2 leading-6 line-clamp-1 md:line-clamp-2 tracking-tight">
+        <h2 className="font-semibold text-lg text-neutral-950 dark:text-neutral-50 mb-2 leading-6 line-clamp-1 md:line-clamp-2 tracking-tight">
           {post.metadata.title}
         </h2>
-        <p className="font-normal text-sm text-slate-600 line-clamp-2 mb-2 tracking-tight">
+        <p className="font-normal text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2 mb-2 tracking-tight">
           {post.metadata.summary}
         </p>
-        <p className="font-normal text-slate-500 text-xs tabular-nums">
+        <p className="font-normal text-neutral-500 dark:text-neutral-600 text-xs tabular-nums">
           {formatDate(post.metadata.publishedAt, false)}
         </p>
       </li>
