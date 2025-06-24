@@ -1,7 +1,7 @@
 export default function Page() {
   return (
-    <section className="max-w-5xl">
-      <h1 className="mb-8 text-2xl font-semibold tracking-tighter">Home</h1>
+    <section className="xl:max-w-6xl m-auto px-4 xl:px-0">
+      <h1 className="font-semibold text-4xl mb-8 tracking-tighter">Home</h1>
     </section>
   );
 }
