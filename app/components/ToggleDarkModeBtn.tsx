@@ -1,14 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useTheme } from "../ThemeProvider";
+import { useTheme } from "../context/ThemeProvider";
 
 function ToggleDarkModeBtn() {
-  const [mounted, setMounted] = useState(false);
   const { isDarkMode, toggleDarkMode } = useTheme();
-  useEffect(() => setMounted(true), []);
-
-  if (!mounted) return <div>로딩중</div>;
 
   const variants = {
     light: {
@@ -24,14 +20,10 @@ function ToggleDarkModeBtn() {
   return (
     <button
       onClick={toggleDarkMode}
-      className={`${
-        isDarkMode ? "bg-neutral-100" : "bg-neutral-800"
-      } w-10 p-1 rounded-full transition-colors duration-500 ease-in-out`}
+      className="dark:bg-neutral-100 bg-neutral-800 w-10 p-1 rounded-full transition-colors duration-500 ease-in-out"
     >
       <svg
-        className={`${
-          isDarkMode ? "translate-x-0" : "translate-x-4"
-        } w-4 h-4 transition-transform`}
+        className="dark:translate-x-0 translate-x-4 w-4 h-4 transition-transform"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
       >

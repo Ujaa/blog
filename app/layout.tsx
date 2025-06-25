@@ -7,7 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "./components/footer";
 import { baseUrl } from "./sitemap";
 import localFont from "next/font/local";
-import { ThemeProvider } from "./ThemeProvider";
+import { ThemeProvider } from "./context/ThemeProvider";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -53,6 +53,19 @@ export const metadata: Metadata = {
 
 const cx = (...classes) => classes.filter(Boolean).join(" ");
 
+const setInitialTheme = `
+  (function() {
+    try {
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (e) {
+    }
+  })();
+`;
+
 export default function RootLayout({
   children,
 }: {
@@ -67,6 +80,9 @@ export default function RootLayout({
         GeistMono.variable
       )}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
+      </head>
       <body className="antialiased lg:mx-auto">
         <ThemeProvider>
           <main className="flex-auto min-w-0 flex flex-col">

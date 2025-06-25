@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 ::selection {
   @apply bg-neutral-100 text-neutral-950;
 }
@@ -74,7 +76,7 @@ html {
 }
 
 .prose code {
-  @apply px-1.5 py-1 mx-1 rounded-md bg-neutral-100 text-base font-medium border border-neutral-200;
+  @apply px-1.5 py-0.5 mx-1 rounded-md bg-neutral-50 dark:bg-neutral-800 text-base tracking-tight font-medium border border-neutral-100 dark:border-neutral-800;
 }
 
 .prose pre code {
@@ -93,23 +95,23 @@ html {
 }
 
 .prose p {
-  @apply my-4 text-neutral-600 dark:text-neutral-300 text-lg tracking-tight leading-9;
+  @apply my-4 text-neutral-600 dark:text-neutral-300 text-base tracking-tight leading-8;
 }
 
 .prose h1 {
-  @apply text-3xl font-bold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
-}
-
-.prose h2 {
   @apply text-2xl font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
 }
 
-.prose h3 {
+.prose h2 {
   @apply text-xl font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
 }
 
+.prose h3 {
+  @apply text-lg font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
+}
+
 .prose h4 {
-  @apply text-lg font-bold tracking-tight mt-6 mb-3 text-neutral-900 dark:text-neutral-100;
+  @apply text-base font-bold tracking-tight mt-6 mb-3 text-neutral-900 dark:text-neutral-100;
 }
 
 .prose strong {
@@ -117,11 +119,11 @@ html {
 }
 
 .prose ul {
-  @apply list-disc pl-6 mb-4;
+  @apply list-disc pl-6 mb-4 text-base tracking-tight leading-8;
 }
 
 .prose ol {
-  @apply list-decimal pl-6 mb-4;
+  @apply list-decimal pl-6 mb-4 text-base tracking-tight leading-8;
 }
 
 .prose > :first-child {
@@ -151,4 +153,8 @@ table {
   max-width: fit-content;
   overflow-x: auto;
   white-space: nowrap;
+}
+
+.wrapper {
+  @apply xl:max-w-6xl m-auto px-4 xl:px-0;
 }

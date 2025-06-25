@@ -3,6 +3,7 @@ import { CustomMDX } from "app/components/mdx";
 import { formatDate, getBlogPosts } from "app/blog/utils";
 import { baseUrl } from "app/sitemap";
 import { slugify } from "@/utils/slug";
+import TableOfContents from "@/app/components/TableOfContents";
 
 export async function generateStaticParams() {
   let posts = getBlogPosts();
@@ -59,18 +60,6 @@ export default function Blog({ params }) {
     notFound();
   }
 
-  const getPadding = (level: number): string | undefined => {
-    return level === 1
-      ? "pl-0"
-      : level === 2
-      ? "pl-2"
-      : level === 3
-      ? "pl-4"
-      : level === 4
-      ? "pl-6"
-      : "pl-0";
-  };
-
   return (
     <section className="max-w-4xl m-auto relative px-4 xl:px-0">
       <script
@@ -95,47 +84,25 @@ export default function Blog({ params }) {
           }),
         }}
       />
-      {post.toc && (
-        <aside className="hidden 2xl:block sticky w-4xl top-24 bg-amber-500">
-          <div className="absolute left-full ml-10 text-sm z-20 w-1/4 overflow-hidden text-neutral-400">
-            <h1 className=" mb-2 text-neutral-500 font-semibold">
-              Table Of Contents
-            </h1>
-            <ul className="truncate flex flex-col gap-1">
-              {post.toc.map(([level, slug], index) => (
-                <li
-                  className={`${getPadding(
-                    level
-                  )} hover:text-neutral-600 hover:font-medium hover:cursor-pointer`}
-                  key={index}
-                >
-                  <a href={`#${slugify(slug)}`} className="anchor">
-                    {slug}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-      )}
+      {post.toc && <TableOfContents toc={post.toc} />}
       {post.metadata.tags && (
-        <ul className="flex flex-wrap gap-1.5 mb-5">
+        <ul className="flex flex-wrap gap-1.5 mb-4">
           {post.metadata.tags?.map((tag) => (
             <li
               key={tag}
-              className="rounded-md bg-neutral-100/20 dark:bg-neutral-600/20 px-2 py-1 border border-neutral-200 dark:border-neutral-500 font-medium text-neutral-500 dark:text-neutral-300 text-sm tabular-nums"
+              className="rounded-md bg-neutral-100/20 dark:bg-neutral-700/20 px-2 py-1 border border-neutral-200 dark:border-neutral-700 font-medium text-neutral-500 dark:text-neutral-300 text-xs tabular-nums"
             >
               {tag}
             </li>
           ))}
         </ul>
       )}
-      <h1 className="title font-bold text-4xl tracking-tighter mb-5">
+      <h1 className="font-semibold text-3xl tracking-tighter mb-4">
         {post.metadata.title}
       </h1>
 
       <div className="flex justify-between items-center mt-3 mb-10 text-sm">
-        <p className="text-base text-neutral-500 dark:text-neutral-400">
+        <p className=" text-neutral-500 dark:text-neutral-400">
           {formatDate(post.metadata.publishedAt)}
         </p>
       </div>

@@ -19,6 +19,7 @@ function parseFrontmatter(fileContent: string): IPost {
     else metadata[metaDataKey] = value;
   });
 
+  // TOC 추출
   const headingRegex = /^#{1,4} (.+)*/gm;
   const matches = content.match(headingRegex) ?? [];
   const toc: Array<[number, string]> = [];
