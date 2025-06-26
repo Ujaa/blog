@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 ::selection {
-  @apply bg-yellow-100 text-neutral-950;
+  @apply bg-neutral-100 text-neutral-950;
 }
 
 :root {
   --text-strong: #0482d6;
   --sh-class: #2d5e9d;
-  --sh-identifier: #3b82f6;
+  --sh-identifier: #525252;
   --sh-sign: #8996a3;
   --sh-string: #007f7a;
   --sh-keyword: #e02518;
@@ -32,6 +34,10 @@
 html {
   min-width: 360px;
   font-family: var(--font-pretendard);
+}
+
+.keep-all {
+  word-break: keep-all;
 }
 
 .prose {
@@ -70,7 +76,7 @@ html {
 }
 
 .prose code {
-  @apply px-1.5 py-0.5 rounded-md bg-blue-50 text-base border-neutral-200;
+  @apply px-1.5 py-0.5 mx-1 rounded-md bg-neutral-50 dark:bg-neutral-800 text-base tracking-tight font-medium border border-neutral-100 dark:border-neutral-800;
 }
 
 .prose pre code {
@@ -85,39 +91,43 @@ html {
 
 .prose img {
   /* Don't apply styles to next/image */
-  @apply my-6 mx-auto rounded-2xl;
+  @apply my-6 mx-auto rounded-3xl;
 }
 
 .prose p {
-  @apply my-4 text-neutral-600 dark:text-neutral-300 text-lg leading-8;
+  @apply my-4 text-neutral-600 dark:text-neutral-300 text-base tracking-tight leading-8;
 }
 
 .prose h1 {
-  @apply text-3xl font-bold tracking-tight mt-9 mb-3 text-neutral-900 dark:text-neutral-100;
+  @apply text-2xl font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
+  scroll-margin-top: 60px;
 }
 
 .prose h2 {
-  @apply text-2xl font-bold tracking-tight mt-9 mb-3 text-neutral-900 dark:text-neutral-100;
+  @apply text-xl font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
+  scroll-margin-top: 60px;
 }
 
 .prose h3 {
-  @apply text-xl font-bold tracking-tight mt-9 mb-3 text-neutral-900 dark:text-neutral-100;
+  @apply text-lg font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
+  scroll-margin-top: 60px;
 }
 
 .prose h4 {
-  @apply text-lg font-bold tracking-tight mt-6 mb-3 text-neutral-900 dark:text-neutral-100;
+  @apply text-base font-bold tracking-tight mt-6 mb-3 text-neutral-900 dark:text-neutral-100;
+  scroll-margin-top: 60px;
 }
 
 .prose strong {
-  @apply font-semibold text-neutral-800 dark:text-neutral-100;
+  @apply font-semibold text-neutral-700 dark:text-neutral-100;
 }
 
 .prose ul {
-  @apply list-disc pl-6 mb-4;
+  @apply list-disc pl-6 mb-4 text-base tracking-tight leading-8;
 }
 
 .prose ol {
-  @apply list-decimal pl-6 mb-4;
+  @apply list-decimal pl-6 mb-4 text-base tracking-tight leading-8;
 }
 
 .prose > :first-child {
@@ -149,6 +159,6 @@ table {
   white-space: nowrap;
 }
 
-.title {
-  text-wrap: balance;
+.wrapper {
+  @apply xl:max-w-6xl m-auto px-4 xl:px-0;
 }

@@ -4,6 +4,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { highlight } from "sugar-high";
 import React from "react";
 import { slugify } from "@/utils/slug";
+import { getSlug } from "../blog/utils";
 
 function Table({ data }) {
   let headers = data.headers.map((header, index) => (
@@ -54,16 +55,19 @@ function Code({ children, ...props }) {
   return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
 }
 
+let slugifyMap: Record<string, number> = {};
+
 function createHeading(level) {
   const Heading = ({ children }) => {
     let slug = slugify(children);
+    const finalSlug = getSlug(children, slugifyMap);
     return React.createElement(
       `h${level}`,
-      { id: slug },
+      { id: finalSlug },
       [
         React.createElement("a", {
-          href: `#${slug}`,
-          key: `link-${slug}`,
+          href: `#${finalSlug}`,
+          key: `link-${finalSlug}`,
           className: "anchor",
         }),
       ],
@@ -90,6 +94,7 @@ let components = {
 };
 
 export function CustomMDX(props) {
+  slugifyMap = {};
   return (
     <MDXRemote
       {...props}

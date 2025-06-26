@@ -10,5 +10,5 @@ export interface IPost {
   metadata: IMetadata;
   slug?: string;
   content: string;
-  toc?: Array<[number, string]>;
+  toc?: Array<[number, string, string]>;
 }

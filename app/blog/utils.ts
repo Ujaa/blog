@@ -1,6 +1,18 @@
+import { slugify } from "@/utils/slug";
 import fs from "fs";
 import path from "path";
 import { IMetadata, IPost } from "../types";
+
+// slug 중복 방지를 위해 동일한 slug 뒤에 id를 붙인다
+export function getSlug(text: string, slugifyMap: Record<string, number>) {
+  const rawSlug = slugify(text);
+  if (slugifyMap[rawSlug] == undefined) slugifyMap[rawSlug] = 0;
+  const filnalSlug = `${rawSlug}${
+    slugifyMap[rawSlug] == 0 ? "" : `-${slugifyMap[rawSlug]}`
+  }`;
+  slugifyMap[rawSlug] += 1;
+  return filnalSlug;
+}
 
 function parseFrontmatter(fileContent: string): IPost {
   const frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
@@ -19,14 +31,20 @@ function parseFrontmatter(fileContent: string): IPost {
     else metadata[metaDataKey] = value;
   });
 
+  // TOC 추출
+  const slugifyMap: Record<string, number> = {};
+
   const headingRegex = /^#{1,4} (.+)*/gm;
-  const matches = content.match(headingRegex) ?? [];
-  const toc: Array<[number, string]> = [];
+  const withoutCode = content.replace(/```[\s\S]*?```/g, "");
+  const matches = withoutCode.match(headingRegex) ?? [];
+
+  const toc: Array<[number, string, string]> = [];
   matches.forEach((match) => {
     const [level, ...text] = match.split(" ");
-    toc.push([level.length, text.join(" ")]);
+    const joinedText = text.join(" ");
+    const filnalSlug = getSlug(joinedText, slugifyMap);
+    toc.push([level.length, joinedText, filnalSlug]);
   });
-
   return {
     metadata: metadata as IMetadata,
     toc,
