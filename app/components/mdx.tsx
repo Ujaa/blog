@@ -4,7 +4,6 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { highlight } from "sugar-high";
 import React from "react";
 import { slugify } from "@/utils/slug";
-import { getSlug } from "../blog/utils";
 
 function Table({ data }) {
   let headers = data.headers.map((header, index) => (
@@ -55,19 +54,16 @@ function Code({ children, ...props }) {
   return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
 }
 
-let slugifyMap: Record<string, number> = {};
-
-function createHeading(level) {
+function createHeading(level, slugifyMap: Record<string, number>) {
   const Heading = ({ children }) => {
     let slug = slugify(children);
-    const finalSlug = getSlug(children, slugifyMap);
     return React.createElement(
       `h${level}`,
-      { id: finalSlug },
+      { id: slug },
       [
         React.createElement("a", {
-          href: `#${finalSlug}`,
-          key: `link-${finalSlug}`,
+          href: `#${slug}`,
+          key: `link-${slug}`,
           className: "anchor",
         }),
       ],
@@ -80,13 +76,7 @@ function createHeading(level) {
   return Heading;
 }
 
-let components = {
-  h1: createHeading(1),
-  h2: createHeading(2),
-  h3: createHeading(3),
-  h4: createHeading(4),
-  h5: createHeading(5),
-  h6: createHeading(6),
+const components = {
   Image: RoundedImage,
   a: CustomLink,
   code: Code,
@@ -94,11 +84,21 @@ let components = {
 };
 
 export function CustomMDX(props) {
-  slugifyMap = {};
+  const slugifyMap: Record<string, number> = {};
+
+  const localComponents = {
+    ...components,
+    h1: createHeading(1, slugifyMap),
+    h2: createHeading(2, slugifyMap),
+    h3: createHeading(3, slugifyMap),
+    h4: createHeading(4, slugifyMap),
+    h5: createHeading(5, slugifyMap),
+    h6: createHeading(6, slugifyMap),
+  };
   return (
     <MDXRemote
       {...props}
-      components={{ ...components, ...(props.components || {}) }}
+      components={{ ...localComponents, ...(props.components || {}) }}
     />
   );
 }
