@@ -1,18 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { slugify } from "@/utils/slug";
 
 export default function TableOfContents({
   toc,
 }: {
-  toc: Array<[number, string]>;
+  toc: Array<[number, string, string]>;
 }) {
   const [activeId, setActiveId] = useState<string>("");
 
+  // observing 영역에 들어오지 않는 heading은 자동으로 toc에서 선택되지 않기 때문에 초기에 직접 지정
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash) setActiveId(decodeURIComponent(hash.slice(1)));
+    }
+  }, []);
+
   useEffect(() => {
     const headingEls = toc
-      .map(([, text]) => document.getElementById(slugify(text)))
+      .map(([, , slug]) => document.getElementById(slug))
       .filter((el): el is HTMLElement => el !== null);
 
     if (!headingEls.length) return;
@@ -20,14 +27,11 @@ export default function TableOfContents({
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
+          if (entry.isIntersecting) setActiveId(entry.target.id);
         });
       },
       {
-        // when the heading crosses 20% from the top
-        rootMargin: "-20% 0px -80% 0px",
+        rootMargin: "0% 0px -90% 0px",
         threshold: 0,
       }
     );
@@ -55,15 +59,21 @@ export default function TableOfContents({
           Table Of Contents
         </h2>
         <ul className="truncate flex flex-col gap-1">
-          {toc.map(([level, slug], index) => (
+          {toc.map(([level, text, slug], index) => (
             <li
-              className={`${getPadding(
-                level
-              )} hover:text-neutral-600 dark:hover:text-neutral-300 text-neutral-400 dark:text-neutral-500 hover:font-medium hover:cursor-pointer`}
+              onClick={() => setActiveId(slug)}
               key={index}
+              className={`${getPadding(level)} 
+    hover:text-neutral-600 dark:hover:text-neutral-300 
+    hover:font-medium cursor-pointer transition-color duration-300
+    ${
+      activeId === slug
+        ? "text-neutral-700 dark:text-neutral-200 font-medium"
+        : "text-neutral-400 dark:text-neutral-500"
+    }`}
             >
-              <a href={`#${slugify(slug)}`} className="anchor">
-                {slug}
+              <a href={`#${slug}`} className="anchor">
+                {text}
               </a>
             </li>
           ))}

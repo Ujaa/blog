@@ -2,7 +2,7 @@ import Title from "./components/Title";
 
 export default function Page() {
   return (
-    <section className="wrapper w-full">
+    <section className="wrapper w-full ">
       <Title>About</Title>
       <div className="max-w-md">
         <p className="font-medium text-xl text-neutral-900 dark:text-neutral-200 mb-4 leading-9 tracking-tight">

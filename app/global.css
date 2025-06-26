@@ -100,18 +100,22 @@ html {
 
 .prose h1 {
   @apply text-2xl font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
+  scroll-margin-top: 60px;
 }
 
 .prose h2 {
   @apply text-xl font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
+  scroll-margin-top: 60px;
 }
 
 .prose h3 {
   @apply text-lg font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
+  scroll-margin-top: 60px;
 }
 
 .prose h4 {
   @apply text-base font-bold tracking-tight mt-6 mb-3 text-neutral-900 dark:text-neutral-100;
+  scroll-margin-top: 60px;
 }
 
 .prose strong {
