@@ -99,22 +99,22 @@ html {
 }
 
 .prose h1 {
-  @apply text-2xl font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
+  @apply leading-8 text-2xl font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
   scroll-margin-top: 60px;
 }
 
 .prose h2 {
-  @apply text-xl font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
+  @apply leading-8 text-xl font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
   scroll-margin-top: 60px;
 }
 
 .prose h3 {
-  @apply text-lg font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
+  @apply leading-8 text-lg font-semibold tracking-tight mt-10 mb-2 text-neutral-900 dark:text-neutral-100;
   scroll-margin-top: 60px;
 }
 
 .prose h4 {
-  @apply text-base font-bold tracking-tight mt-6 mb-3 text-neutral-900 dark:text-neutral-100;
+  @apply leading-8 text-base font-semibold tracking-tight mt-6 mb-3 text-neutral-900 dark:text-neutral-100;
   scroll-margin-top: 60px;
 }
 
@@ -128,6 +128,22 @@ html {
 
 .prose ol {
   @apply list-decimal pl-6 mb-4 text-base tracking-tight leading-8;
+}
+
+.prose aside {
+  @apply my-4 bg-neutral-100 dark:bg-neutral-800 px-5 py-0.5 rounded-xl;
+}
+
+.prose aside h6 {
+  @apply leading-6 font-semibold tracking-tight mb-0.5 text-neutral-700 dark:text-neutral-300;
+}
+
+.prose aside * {
+  @apply text-sm;
+}
+
+.prose blockquote {
+  @apply border-l-3 dark:border-neutral-700 border-neutral-200 pl-4 ml-2;
 }
 
 .prose > :first-child {

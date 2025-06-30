@@ -24,7 +24,7 @@ export default function Post(post: IPost) {
         </div>
 
         {post.metadata.tags && (
-          <ul className="flex flex-wrap gap-1 mb-3">
+          <ul className="flex flex-wrap gap-1 mb-3 max-h-[22px] overflow-hidden">
             {post.metadata.tags?.map((tag) => (
               <Tag key={tag} text={tag} />
             ))}

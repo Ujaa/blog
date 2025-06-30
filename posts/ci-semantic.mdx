@@ -1,0 +1,120 @@
+---
+title: "로컬에서는 잘 되던 빌드가 CI 환경에서 갑자기 실패했다"
+publishedAt: "2025-06-24"
+summary: "프로젝트에서 GitHub Actions로 CI를 구축하던 중, 로컬에서는 잘 되던 빌드가 CI 환경에서는 다음과 같은 오류로 실패하는 일이 발생했습니다."
+tags: "Github Actions, CI, Semantic Versioning, TailwindCSS"
+image: "ci-semantic/1.png"
+---
+
+# 대체 왜…
+
+<img width="600rem" src="/images/ci-semantic/1.png" />
+
+프로젝트에서 GitHub Actions로 CI를 구축하던 중, 로컬에서는 잘 되던 빌드가 CI 환경에서는 다음과 같은 오류로 실패하는 일이 발생했습니다.
+
+```
+Error: Missing field `negated` on ScannerOptions.sources
+```
+
+로컬에서는 정상적으로 동작하던 `next build`가 왜 CI 환경에서만 이런 에러가 발생하는 걸까요?
+
+# 원인은 바로 버전 충돌
+
+에러 메시지를 바탕으로 TailwindCSS Github Issue에 검색해보니 [동일한 문제를 다룬 이슈](https://github.com/tailwindlabs/tailwindcss/issues/17500)를 발견할 수 있었습니다.
+
+<img width="700rem" src="/images/ci-semantic/2.png" />
+
+issue를 정리해보면 다음과 같습니다.
+
+`@tailwindcss/postcss@4.0.0`는 다음과 같은 dependencies를 가진다고 합니다.
+
+```json
+ "dependencies": {
+    "@tailwindcss/node": "^4.0.0",
+    ...
+```
+
+issue 작성자가 말하길 의존성 패키지인 `@tailwindcss/node@^4.0.0`를 설치할 때 `^4.0.0` 범위 안에서 최신 버전인 `@tailwindcss/node@4.1.0`가 설치되었고, 이 버전이 `postcss@4.0.0` 와 내부적으로 호환되지 않으면서 문제가 발생한 것이라고 합니다.
+
+제 프로젝트의 `package.json`에는 아래와 같이 Tailwind 관련 패키지가 설정되어 있었습니다.
+
+```json
+ "@tailwindcss/postcss": "^4",
+ "tailwindcss": "^4",
+```
+
+로컬에서는 이미 설치되어 있는 패키지를 그대로 사용하므로 문제가 없었지만, CI에서는 `pnpm install`이 새로 실행되면서 `^4` 범위 내의 가장 최신 버전이 설치되면서 해당 issue와 동일하게 의존성 간 버전 불일치가 발생한 게 문제의 원인이었습니다.
+
+# 해결 방법: 버전 명시하기
+
+TailwindCSS 팀은 `v4.0.7`에서 해당 문제가 고쳐졌다고 합니다.
+
+<img width="700rem" src="/images/ci-semantic/3.png" />
+
+그래서 아래처럼 package.json에 최신 버전을 직접 명시해 문제를 해결했습니다.
+
+```jsx
+{
+  "@tailwindcss/postcss": "^4.1.3",
+  "tailwindcss": "^4.1.3"
+}
+```
+
+<aside>
+  <h6>참고사항</h6>
+  Lock 파일은 패키지 설치 시점에 설치한 패키지의 정확한 버전을 모두 기록하고 있는데
+  pnpm install을 할 때 `—frozen-lockfile` 옵션을 사용하면 Lock 파일과 다른 버전이
+  설치될 때 설치가 중단된다고 합니다.
+</aside>
+
+# 캐럿`^`이 무엇인지 복습하자
+
+이번 이슈를 해결하면서 package.json에 버전을 명시할 때 버전 앞에 붙는 틸드 `~` 와 함께 자주 쓰이는 캐럿 `^` 이 무슨 뜻인지 다시 한 번 정리해보고자 합니다.
+
+## Software Versioning
+
+틸드와 캐럿에 대해 알아보기 전에 소프트웨어의 버전을 작성하는 방법부터 간단하게 이해하고 넘어가 봅시다. 소프트웨어의 버전을 명시하는 방법은 다양할 수 있습니다. 그 중 `node.js`와 `npm`은 모두 <strong>시멘틱 버저닝(Semantic Versioning)</strong>이라는 소프트웨어 버전 변경 규칙을 사용합니다.
+
+## Semantic Versioning
+
+<img width="400rem" src="/images/ci-semantic/4.svg" />
+
+시멘틱 버저닝은 <strong>`Major.Minor.Patch`</strong> 형태로 버전을 작성합니다. [사이트](https://semver.org/)에 들어가면 자세한 semantic versioning 명세를 확인할 수 있습니다. summary 내용만 간단하게 살펴보면 다음과 같습니다.
+
+> <strong>Summary 내용 번역</strong>
+>
+> 버전 번호 MAJOR.MINOR.PATCH가 있을 때, 다음과 같이 증가시킨다:
+>
+> 1. **MAJOR**: 이전 버전과 호환되지 않는 API 변경 시
+> 2. **MINOR**: 이전 버전과 호환되는 방식으로 기능을 추가할 때
+> 3. **PATCH**: 이전 버전과 호환되는 버그 수정 시
+>
+> pre-release(1.0.0 미만인 버전)와 build metadata를 위한 추가 라벨은 MAJOR.MINOR.PATCH 형식의 확장으로 사용할 수 있다.
+
+## 틸드와 캐럿 버저닝
+
+그럼 다시 돌아와서 **틸드 `~`** 와 **캐럿 `^`** 에 대해 알아봅시다.
+
+- **틸드 버저닝**: **patch** 범위 내에서 버전 업데이트(`~3.4.7`: `>= 3.4.7` `< 3.5.0`)
+- **캐럿 버저닝**: **major** 이하 범위에서 버전 업데이트(`^3.4.7`: `>= 3.4.7` `< 4.0.0`)
+
+<aside>
+  <h6>예외사항</h6>
+  버전이 1.0.0 미만인 경우에는 api 변경이 수시로 일어나기 때문에 캐럿`^`을 사용해도 틸드`~`처럼 동작한다. `^0.4.7`: `>= 0.4.7` `< 0.5.0`
+</aside>
+
+<aside>
+  <h6>구버전 npm에서 캐럿을 사용했을 때 문제</h6>
+  npm은 1.4.3 버전부터 캐럿 표기법을 도입했기 때문에 그 이전 버전의 npm은 캐럿을
+  유효한 버전 표기법으로 인식하지 못해 오류가 발생할 수 있다.
+</aside>
+
+# 결론
+
+CI 환경처럼 매번 새롭게 패키지를 설치하는 경우 `^` 범위 안에서 최신 버전이 설치되며 예기치 않은 문제가 발생할 수 있다는 사실을 알게 되었습니다. 또한 그동안 lock 파일은 길고 git 충돌 났을 때 힘들게만 만드는 녀석인줄 알았는데 새삼 프로젝트의 일관성과 안정성을 책임지는 파일이라는 사실을 알게 되었습니다.
+
+# 참고
+
+- [npm package.json에서 틸드(~) 대신 캐럿(^) 사용하기](https://blog.outsider.ne.kr/1041)
+- [npm 패키지 버전관리 틸드(~)와 캐럿(^)](https://yiyb-blog.vercel.app/posts/npm-tilde-carrot)
+- [Node.js 기반 시스템에서 lock 파일의 역할](https://velog.io/@swj9077/Node.js-%EA%B8%B0%EB%B0%98-%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%97%90%EC%84%9C-.lock-%ED%8C%8C%EC%9D%BC%EC%9D%98-%EC%A4%91%EC%9A%94%EC%84%B1)
