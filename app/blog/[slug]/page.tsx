@@ -95,7 +95,7 @@ export default function Blog({ params }) {
           ))}
         </ul>
       )}
-      <h1 className="font-semibold text-3xl tracking-tighter mb-4">
+      <h1 className="font-semibold text-3xl leading-12 tracking-tighter mb-4">
         {post.metadata.title}
       </h1>
 
