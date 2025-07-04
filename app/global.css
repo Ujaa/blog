@@ -7,32 +7,38 @@
 }
 
 :root {
-  --text-strong: #0482d6;
-  --sh-class: #2d5e9d;
-  --sh-identifier: #525252;
-  --sh-sign: #8996a3;
-  --sh-string: #007f7a;
-  --sh-keyword: #e02518;
-  --sh-comment: #a19595;
-  --sh-jsxliterals: #6266d1;
-  --sh-property: #e25a1c;
-  --sh-entity: #e25a1c;
+  --text-strong: #1e72ff; /* 함수명, 강조 텍스트 - 선명한 파랑 */
+  --sh-class: #00ae8e; /* 클래스 이름 - 진한 민트 */
+  --sh-identifier: #007acc; /* 변수, 식별자 - 선명한 블루 계열 */
+  --sh-sign: #5a5a5a; /* 기호 - 어두운 중성 회색 */
+  --sh-string: #f0553c; /* 문자열 - 강렬한 주황/레드 */
+  --sh-keyword: #d400c6; /* 예약어 - 핫핑크/보라빛 */
+  --sh-comment: #0a7b3d; /* 주석 - 깊은 녹색 */
+  --sh-jsxliterals: #d4b000; /* JSX 태그 - 채도 높은 머스터드 옐로우 */
+  --sh-property: #00a4e4; /* 객체 프로퍼티 - 사이언 블루 */
+  --sh-entity: #ff5aa2; /* DOM 태그/HTML 요소 - 형광 핑크 */
+}
+
+.dark:root {
+  --text-strong: #3b9eff; /* 함수명, 강조 텍스트 - 비비드 블루 */
+  --sh-class: #1ce3bb; /* 클래스 이름 - 선명한 청록색 */
+  --sh-identifier: #46beff; /* 변수, 식별자 - 푸른 하늘 */
+  --sh-sign: #a9adc1; /* 기호 - 부드러운 그레이 블루 */
+  --sh-string: #ff6d3d; /* 문자열 - 강한 코랄 오렌지 */
+  --sh-keyword: #e052fe; /* 예약어 - 네온 퍼플 핑크 */
+  --sh-comment: #4ddc83; /* 주석 - 밝은 연녹색 */
+  --sh-jsxliterals: #ffe347; /* JSX 태그 - 네온 옐로우 */
+  --sh-property: #3be8ff; /* 객체의 프로퍼티 - 하늘색 + 청록 혼합 */
+  --sh-entity: #ff57bb; /* HTML 태그/요소 - 핫핑크/마젠타 */
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --sh-class: #4c97f8;
-    --sh-identifier: white;
-    --sh-keyword: #f47067;
-    --sh-string: #0fa295;
-  }
   html {
     color-scheme: dark;
   }
 }
 
 html {
-  min-width: 360px;
   font-family: var(--font-pretendard);
 }
 
@@ -59,7 +65,7 @@ html {
 }
 
 .prose a {
-  @apply underline transition-all text-blue-500 decoration-blue-200 dark:decoration-neutral-600 underline-offset-2 decoration-[0.1em];
+  @apply underline transition-all text-blue-500 decoration-blue-500/40 dark:text-blue-400 dark:decoration-blue-400/40 underline-offset-2 decoration-[0.1em];
 }
 
 .prose .anchor:after {
@@ -71,27 +77,21 @@ html {
   @apply visible;
 }
 
-.prose pre {
-  @apply bg-neutral-800 dark:bg-neutral-900 rounded-lg overflow-x-auto border border-neutral-400 dark:border-neutral-900 py-4 px-3 text-sm mb-3;
+.prose code {
+  @apply px-1 py-0.5 mx-1 rounded-md bg-neutral-50 dark:bg-neutral-800 text-sm tracking-tight font-medium border border-neutral-100 dark:border-neutral-900/40;
 }
 
-.prose code {
-  @apply px-1.5 py-0.5 mx-1 rounded-md bg-neutral-50 dark:bg-neutral-800 text-base tracking-tight font-medium border border-neutral-100 dark:border-neutral-800;
+.prose pre {
+  @apply w-full max-w-full overflow-x-scroll bg-neutral-50 dark:bg-neutral-800 rounded-xl py-4 px-5 mb-3 border border-neutral-100 dark:border-neutral-900/40;
 }
 
 .prose pre code {
-  @apply p-0 bg-transparent;
-  border: initial;
-  line-height: 1.2;
-}
-
-.prose code span {
-  @apply font-medium;
+  @apply whitespace-pre-wrap m-0 p-0 border-none bg-transparent text-sm leading-5 block text-sm;
 }
 
 .prose img {
   /* Don't apply styles to next/image */
-  @apply my-6 mx-auto rounded-3xl;
+  @apply my-6 mx-auto rounded-2xl;
 }
 
 .prose p {
@@ -131,19 +131,19 @@ html {
 }
 
 .prose aside {
-  @apply my-4 bg-neutral-100 dark:bg-neutral-800 px-5 py-0.5 rounded-xl;
+  @apply my-4 bg-neutral-100 dark:bg-neutral-800/60 px-5 py-0.5 rounded-xl;
 }
 
 .prose aside h6 {
-  @apply leading-6 font-semibold tracking-tight mb-0.5 text-neutral-700 dark:text-neutral-300;
+  @apply font-semibold tracking-tight mb-1 text-neutral-700 dark:text-neutral-300;
 }
 
 .prose aside * {
-  @apply text-sm;
+  @apply text-sm leading-7;
 }
 
 .prose blockquote {
-  @apply border-l-3 dark:border-neutral-700 border-neutral-200 pl-4 ml-2;
+  @apply border-l-3 dark:border-neutral-700 border-neutral-200 pl-4 pt-1 ml-2;
 }
 
 .prose > :first-child {
