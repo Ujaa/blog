@@ -13,7 +13,7 @@
   --sh-sign: #5a5a5a; /* 기호 - 어두운 중성 회색 */
   --sh-string: #f0553c; /* 문자열 - 강렬한 주황/레드 */
   --sh-keyword: #d400c6; /* 예약어 - 핫핑크/보라빛 */
-  --sh-comment: #0a7b3d; /* 주석 - 깊은 녹색 */
+  --sh-comment: #aaaaaa; /* 주석 - 깊은 녹색 */
   --sh-jsxliterals: #d4b000; /* JSX 태그 - 채도 높은 머스터드 옐로우 */
   --sh-property: #00a4e4; /* 객체 프로퍼티 - 사이언 블루 */
   --sh-entity: #ff5aa2; /* DOM 태그/HTML 요소 - 형광 핑크 */
@@ -25,8 +25,8 @@
   --sh-identifier: #46beff; /* 변수, 식별자 - 푸른 하늘 */
   --sh-sign: #a9adc1; /* 기호 - 부드러운 그레이 블루 */
   --sh-string: #ff6d3d; /* 문자열 - 강한 코랄 오렌지 */
-  --sh-keyword: #e052fe; /* 예약어 - 네온 퍼플 핑크 */
-  --sh-comment: #4ddc83; /* 주석 - 밝은 연녹색 */
+  --sh-keyword: #e874ff; /* 예약어 - 네온 퍼플 핑크 */
+  --sh-comment: #acacac; /* 주석 - 밝은 연녹색 */
   --sh-jsxliterals: #ffe347; /* JSX 태그 - 네온 옐로우 */
   --sh-property: #3be8ff; /* 객체의 프로퍼티 - 하늘색 + 청록 혼합 */
   --sh-entity: #ff57bb; /* HTML 태그/요소 - 핫핑크/마젠타 */
@@ -123,11 +123,11 @@ html {
 }
 
 .prose ul {
-  @apply list-disc pl-6 mb-4 text-base tracking-tight leading-8;
+  @apply list-disc pl-6 mb-4 text-base tracking-tight leading-8 text-neutral-600 dark:text-neutral-300;
 }
 
 .prose ol {
-  @apply list-decimal pl-6 mb-4 text-base tracking-tight leading-8;
+  @apply list-decimal pl-6 mb-4 text-base tracking-tight leading-8 text-neutral-600 dark:text-neutral-300;
 }
 
 .prose aside {
@@ -143,7 +143,7 @@ html {
 }
 
 .prose blockquote {
-  @apply border-l-3 dark:border-neutral-700 border-neutral-200 pl-4 pt-1 ml-2;
+  @apply border-l-3 dark:border-neutral-700 border-neutral-200 pl-4;
 }
 
 .prose > :first-child {

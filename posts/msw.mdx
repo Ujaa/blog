@@ -1,0 +1,192 @@
+---
+title: "MSW로 FE 개발 효율 향상시키기(MSW 2.0)"
+publishedAt: "2025-07-05"
+summary: "이번 글에서는 MSW를 찾아보며 알게된 내용들, 그리고 2.0 버전에서는 어떻게 사용하는지, 그리고 실제 사용하면서 좋았던 점을 기록으로 남기고자 합니다."
+tags: "MSW, FE, React"
+image: "msw/1.jpg"
+---
+
+# API가 안 나왔다고요? 괜찮습니다
+
+최근 진행한 프로젝트에서도 프론트엔드와 백엔드 개발이 동시에 진행되었는데 API가 나오지 않아서 어떻게 데이터에 따른 UI를 구현해야 할지 고민이 되었습니다. 처음에는 임시로 mock 데이터를 직접 넣어 테스트했지만 이 방식은 네트워크 레벨에서 테스트가 불가능하다는 한계가 있었습니다.
+
+<img width="400rem" src="/images/msw/1.jpg" />
+
+그러다가 알게 된 것이 바로 MSW였습니다. 이번 글에서는 MSW를 찾아보며 알게된 내용들, 그리고 2.0 버전에서는 어떻게 사용하는지, 그리고 실제 사용하면서 좋았던 점을 기록으로 남기고자 합니다.
+
+# MSW란?
+
+MSW(Mock Service Worker)는 이름에서도 알 수 있듯이 Service Worker를 이용해 mock(가짜) 데이터를 만들어 주는 라이브러리입니다. 즉, 백엔드에서 API가 준비되지 않았더라도 프론트엔드에서 네트워크 요청을 테스트할 수 있습니다.
+
+<img width="200rem" src="/images/msw/2.png" />
+
+# Service Worker는 무엇일까?
+
+그렇다면 Service Worker는 어떻게 가짜 데이터를 만들어줄 수 있는 것일까요?
+
+Service Worker는 브라우저의 메인 스레드와는 독립적으로 별도 스레드에서 동작하는 스크립트입니다. 웹 페이지와 서버 사이에서 프록시 역할을 하여 브라우저의 네트워크 요청을 가로챈 뒤 가짜 데이터를 응답할 수 있습니다.
+
+<img width="600rem" src="/images/msw/3.svg" />
+
+일반적으로 캐싱, 오프라인 지원, 백그라운드 동기화에 활용되고, 크롬 기준으로 보면 Render Process 안에서 메인 스레드 외에 Service Worker thread에서 작동하는 구조라고 합니다.
+
+<aside>
+  <h6>주의 사항</h6>
+  다만 Service Worker는 네트워크 상에서 응답을 가로챌 수 있는 만큼 보안이 중요하기
+  때문에 기본적으로 `localhost`를 제외하고는 **HTTPS** 환경에서만 동작합니다.
+</aside>
+
+# MSW의 동작 원리
+
+다음으로 MSW의 동작 원리를 알아봅시다. MSW는 크게 다음과 같은 흐름으로 동작합니다.
+
+1. 브라우저에서 네트워크 요청을 보냅니다.
+2. Service Worker가 이를 가로챕니다.
+3. 이후 요청을 복사한 뒤 MSW 라이브러리로 전달합니다.
+4. MSW 라이브러리는 직접 만든 핸들러를 통해 mock response를 응답합니다.
+5. 이를 Service Worker가 다시 브라우저로 돌려줍니다.
+
+이렇게 하면 브라우저는 실제 서버가 아닌 MSW가 만든 mock 데이터를 응답받게 되는 것입니다.
+
+<img width="600rem" src="/images/msw/4.svg" />
+
+# MSW 사용방법
+
+다음으로는 제가 실제 프로젝트(react + vite)에서 MSW를 도입했던 방식을 정리해봤습니다.
+
+## 설치 및 설정
+
+우선 msw 패키지를 설치합니다.
+
+```html
+npm i msw --save-dev
+```
+
+설치 후 msw를 브라우저에서 사용하기 위해서는 아래 명령어로 Service Worker 파일을 public 폴더 안에 생성해야 합니다. 아래 명령어를 실행하면 public 폴더 안에 `mockServiceWorker.js` 파일이 생성됩니다.
+
+```html
+npx msw init <PUBLIC_DIR> --save
+```
+
+## 폴더 구조 만들기
+
+여러 블로그를 참고했을 때 핸들러와 데이터는 다음과 같은 폴더로 관리했을 때가 가장 편리했습니다. 핸들러와 데이터를 명확히 분리해 추후 확장할 때도 쉽게 추가하고 수정할 수 있었습니다.
+
+```jsx
+mocks/
+├── api/ // 핸들러 작성
+│   ├── data/ // mock 데이터만 모아서 관리(핸들러이름에 data만 뒤에 붙여서 명명)
+│   │   └── example1Data.ts
+│   │   └── example2Data.ts
+│   └── example1.ts
+│   └── example2.ts
+├── browser.ts // 브라우저용 worker 설정 파일
+└── handlers.ts // 핸들러를 한 곳에 모아 export할 때 사용
+```
+
+## Mock Data 및 Handler 작성
+
+다음으로는 필요한 코드를 작성합니다. 먼저 mock 데이터를 준비합니다.
+
+```jsx
+export const example1Data = [
+  { id: '1', items: [ ... ] },
+  ...
+];
+```
+
+그다음 핸들러를 작성합니다. 이 핸들러가 바로 요청을 가로채고 가짜 데이터를 응답하는 역할을 합니다.
+
+```jsx
+import { delay, http, HttpResponse } from "msw";
+import { example1Data } from "./data/example1Data";
+
+export const example1Handler = [
+  http.get(`${import.meta.env.VITE_API_URL}/example1`, async () => {
+    await delay(1000); // delay로 응답을 늦출 수도 있다.
+    return HttpResponse.json(example1Data);
+  }),
+];
+```
+
+모든 핸들러는 handler 변수에 모아서 관리합니다.
+
+```jsx
+import { example1Handler } from "./api/example1";
+
+export const handlers = [...example1Handler];
+```
+
+이를 브라우저용 worker에 넘겨줍니다.
+
+```jsx
+import { setupWorker } from "msw/browser";
+import { handlers } from "./handlers";
+
+export const worker = setupWorker(...handlers);
+```
+
+## 선택적으로 실행하기
+
+코드 작성을 완료했다면 이제 worker를 실행해주면 됩니다. 그러나 그전에 MSW를 개발 환경에서도 원할 때만 실행할 수 있도록 `.env` 파일에 다음과 같은 환경 변수를 추가했습니다:
+
+```jsx
+VITE_MOCKING = true;
+```
+
+이렇게 하면 환경 변수 값에 따라 MSW를 개발 중에도 유연하게 켜고 끌 수 있습니다. 그리고 `main.tsx`에서는 이 변수를 확인해 값이 `'true'`일 때만 MSW를 실행하도록 설정했습니다.
+
+```jsx
+async function enableMocking() {
+  if (import.meta.env.VITE_MOCKING === "true") {
+    const { worker } = await import("./mocks/browser");
+    await worker.start({ onUnhandledRequest: "warn" });
+  }
+}
+```
+
+여기서 중요한 점은 Service Worker는 비동기적으로 등록되기 때문에 반드시 worker 등록이 완료된 후에 앱이 실행될 수 있도록 조치를 취해야 한다는 것입니다.
+
+[공식 문서](https://mswjs.io/docs/integrations/browser#conditionally-enable-mocking)에서 실제로 다음과 같이 강조하고 있습니다.
+
+> Make sure to await the `worker.start()` Promise! Service Worker registration is asynchronous and failing to await it may result in a race condition between the worker registration and the initial requests your application makes.
+
+그래서 저는 아래처럼 `then`을 이용해 worker.start()가 끝난 이후에 앱을 렌더링했습니다.
+
+```jsx
+enableMocking().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
+});
+```
+
+## 실행 확인
+
+제대로 동작하면 개발자 도구 콘솔에서 다음 메시지를 확인할 수 있습니다.
+
+```
+[MSW] Mocking enabled.
+```
+
+네트워크 탭에서도 요청이 처리되는 것을 볼 수 있습니다.
+
+<img width="600rem" src="/images/msw/5.webp" />
+
+# MSW 실사용 후기
+
+MSW를 직접 도입하니 확실히 백엔드에 독립적으로 개발을 진행할 수 있어서 좋았습니다.
+
+또한 공식 문서가 매우 잘 되어 있어 도입이 어렵지 않았고, 네트워크 응답 상태를 손쉽게 조절할 수 있어 에러 처리와 로딩 화면 테스트도 수월했습니다. 또한 delay 등을 이용해 응답 속도를 늦춰서 로딩 화면을 더 테스트할 수도 있었습니다.
+
+특히 MSW 덕분에 기획자나 디자이너에게 실제 서비스 흐름을 시연할 때 큰 도움이 되었습니다.
+
+직접 사용해보니 왜 많은 사람들이 MSW 선택하는지 알았고 도입하길 잘했다는 생각이 들었습니다!
+
+# 참고
+
+- [MSW 공식 문서](https://mswjs.io/docs/quick-start/)
+- [[올리브영 테크블로그] Next.js에서 MSW(Mock Service Worker)로 네트워크 Mocking하기](https://oliveyoung.tech/2024-01-23/msw-frontend/)
+- [[카카오 테크블로그] Mocking으로 생산성까지 챙기는 FE 개발](https://tech.kakao.com/posts/458)
